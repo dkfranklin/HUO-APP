@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef } from 'react';
 import { motion, useTransform } from 'motion/react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import OnboardingForm from '@/components/shadcn-space/blocks/forms-06/onboarding-form';
 import { usePosterMotion } from '../hooks/usePosterMotion';
 import { COLLAB_HANDLES, DISCIPLINES, HERO_LINES, INSTAGRAM_URL } from '../data/landing';
@@ -95,6 +95,9 @@ export function LandingPage() {
             <a className="landing-cta landing-cta-primary" href="#talent-call">
               Join the talent call
             </a>
+            <Link className="landing-cta landing-cta-secondary" to="/hire">
+              Hiring creatives? →
+            </Link>
             <a
               className="landing-cta landing-cta-ghost"
               href={INSTAGRAM_URL}
@@ -125,6 +128,10 @@ export function LandingPage() {
         <div className="landing-form-intro">
           <p className="landing-micro">TALENT CALL</p>
           <p className="landing-form-kicker">Tell us who you are.</p>
+          <p className="landing-form-note">
+            We match Columbus creatives with paid local gigs by hand. If there's a fit,
+            we'll reach out.
+          </p>
         </div>
         <OnboardingForm />
       </section>

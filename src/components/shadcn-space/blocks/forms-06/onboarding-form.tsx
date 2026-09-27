@@ -2,45 +2,40 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import {
-  ArrowLeft,
-  ArrowRight,
-  Camera,
-  Check,
-  Film,
-  Loader2,
-  PenTool,
-  RotateCcw,
-  Scissors,
-  Shirt,
-  Sparkles,
-  User,
-} from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { getSupabase } from "@/lib/supabase";
+import {
+  CITIES,
+  CREATIVE_TYPES,
+  EASE,
+  EMAIL_RE,
+  Field,
+  IG_RE,
+  PrivacyNote,
+  ShareActions,
+  TypeTile,
+  URL_RE,
+  cardClass,
+  checkRowClass,
+  checkboxClass,
+  clean,
+  ghostButtonClass,
+  inputClass,
+  microClass,
+  pad2,
+  primaryButtonClass,
+  selectClass,
+  textareaClass,
+  utmSource,
+  withScheme,
+} from "./form-kit";
 
-const EASE = [0.65, 0, 0.35, 1] as const;
 const FORM_VERSION = "v1";
-
-const CREATIVE_TYPES = [
-  { id: "model", label: "Model", icon: User },
-  { id: "photographer", label: "Photographer", icon: Camera },
-  { id: "videographer", label: "Videographer", icon: Film },
-  { id: "designer", label: "Designer", icon: PenTool },
-  { id: "stylist", label: "Stylist", icon: Shirt },
-  { id: "hair_makeup", label: "Hair / Makeup", icon: Scissors },
-  { id: "other", label: "Other", icon: Sparkles },
-] as const;
-
-const CITIES = [
-  { id: "columbus", label: "Columbus" },
-  { id: "other_ohio", label: "Elsewhere in Ohio" },
-  { id: "other", label: "Outside Ohio" },
-] as const;
 
 type FormData = {
   full_name: string;
@@ -116,34 +111,6 @@ const STEP_COPY: Record<StepId, { eyebrow: string; title: string }> = {
   confirm: { eyebrow: "Last step", title: "Almost done" },
 };
 
-const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-const IG_RE = /^@?[A-Za-z0-9._]{1,30}$/;
-const URL_RE = /^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i;
-
-// Matches the poster: square edges, hairline black borders, mono uppercase labels.
-const fieldBase =
-  "rounded-none border border-black/20 bg-white/70 text-[#1a1a1a] shadow-none transition-colors placeholder:text-black/35 hover:border-black/40 focus-visible:border-black focus-visible:ring-0 focus-visible:outline-none";
-const inputClass = `h-11 px-3 ${fieldBase}`;
-const selectClass = `h-11 w-full px-3 text-sm ${fieldBase}`;
-const textareaClass = `min-h-24 resize-none px-3 py-2.5 ${fieldBase}`;
-const microClass = "font-mono text-[0.68rem] font-medium uppercase tracking-[0.08em] text-[#555]";
-const primaryButtonClass =
-  "h-11 gap-2 rounded-none border-black bg-black px-5 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-white hover:border-[var(--color-coral-dark)] hover:bg-[var(--color-coral-dark)] disabled:border-black/20 disabled:bg-black/20 disabled:opacity-100 cursor-pointer";
-const ghostButtonClass =
-  "h-11 gap-2 rounded-none px-0 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#666] hover:bg-transparent hover:text-black cursor-pointer";
-
-const pad2 = (n: number) => String(n).padStart(2, "0");
-
-const clean = (v: string) => {
-  const t = v.trim();
-  return t.length ? t : null;
-};
-
-const withScheme = (v: string) => {
-  const t = v.trim();
-  if (!t) return null;
-  return /^https?:\/\//i.test(t) ? t : `https://${t}`;
-};
 
 const stepVariants = {
   initial: (dir: number) => ({ x: dir > 0 ? 24 : -24, opacity: 0 }),
@@ -160,24 +127,6 @@ const stepVariants = {
     transition: { duration: 0.25, ease: EASE },
   }),
 };
-
-const Field = ({
-  label,
-  hint,
-  children,
-}: {
-  label: string;
-  hint?: string;
-  children: React.ReactNode;
-}) => (
-  <label className="flex flex-col gap-1.5 text-sm">
-    <span className="font-medium text-[#1a1a1a]">
-      {label}
-      {hint && <span className="ml-1 font-normal text-[#777]">{hint}</span>}
-    </span>
-    {children}
-  </label>
-);
 
 const OnboardingForm = () => {
   const [stepIndex, setStepIndex] = useState(0);
@@ -263,7 +212,6 @@ const OnboardingForm = () => {
     }
 
     const f = formData;
-    const source = new URLSearchParams(window.location.search).get("utm_source");
 
     const row = {
       form_version: FORM_VERSION,
@@ -293,7 +241,7 @@ const OnboardingForm = () => {
       businesses_want: clean(f.businesses_want),
       businesses_worked: clean(f.businesses_worked),
       anything_else: clean(f.anything_else),
-      source: source ? source.slice(0, 100) : null,
+      source: utmSource(),
     };
 
     setIsSubmitting(true);
@@ -340,15 +288,6 @@ const OnboardingForm = () => {
     setStepIndex((i) => i - 1);
   };
 
-  const handleReset = () => {
-    setDirection(-1);
-    setStepIndex(0);
-    setIsSubmitted(false);
-    setAlreadyListed(false);
-    setError(null);
-    setFormData(EMPTY);
-  };
-
   const hasOptionalInput = [
     formData.referred_by,
     formData.refer_creative_handle,
@@ -364,7 +303,7 @@ const OnboardingForm = () => {
   return (
     <section className="flex justify-center px-4 pt-6 sm:pt-10">
       <div className="w-full max-w-xl">
-        <Card className="relative gap-0 rounded-none border border-black bg-[var(--color-paper)] p-0 text-[#1a1a1a] ring-0 shadow-[6px_6px_0_0_rgba(0,0,0,0.08)]">
+        <Card className={cardClass}>
           {!isSubmitted && (
             <div className="absolute inset-x-0 top-0 h-1 bg-black/10" aria-hidden="true">
               <motion.div
@@ -428,10 +367,10 @@ const OnboardingForm = () => {
                     )}
                   </div>
 
-                  <Button variant="ghost" onClick={handleReset} className={ghostButtonClass}>
-                    <RotateCcw className="size-3.5" />
-                    Start over
-                  </Button>
+                  <ShareActions
+                    shareText="Huo is matching Columbus creatives with paid local gigs. Join the talent call:"
+                    sharePath="/?utm_source=referral#talent-call"
+                  />
                 </motion.div>
               ) : (
                 <motion.form
@@ -504,26 +443,15 @@ const OnboardingForm = () => {
                       <>
                         <p className="text-sm text-[#666]">Pick all that apply.</p>
                         <div className="grid grid-cols-2 gap-3">
-                          {CREATIVE_TYPES.map((t) => {
-                            const isSelected = formData.creative_types.includes(t.id);
-                            return (
-                              <button
-                                key={t.id}
-                                type="button"
-                                aria-pressed={isSelected}
-                                onClick={() => toggleType(t.id)}
-                                className={cn(
-                                  "relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-none border p-4 last:col-span-2 last:flex-row text-sm font-medium transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black",
-                                  isSelected
-                                    ? "border-black bg-black text-white"
-                                    : "border-black/15 bg-white/60 text-[#444] hover:border-black hover:text-black",
-                                )}
-                              >
-                                <t.icon className="size-5" />
-                                <span>{t.label}</span>
-                              </button>
-                            );
-                          })}
+                          {CREATIVE_TYPES.map((t) => (
+                            <TypeTile
+                              key={t.id}
+                              label={t.label}
+                              icon={t.icon}
+                              selected={formData.creative_types.includes(t.id)}
+                              onToggle={() => toggleType(t.id)}
+                            />
+                          ))}
                         </div>
                         {formData.creative_types.includes("other") && (
                           <Field label="What else do you do?">
@@ -635,14 +563,15 @@ const OnboardingForm = () => {
 
                     {stepId === "confirm" && (
                       <>
-                        <label className="flex items-start gap-3 border border-black/15 bg-white/60 p-4 text-sm text-[#1a1a1a] cursor-pointer transition-colors hover:border-black/40 has-checked:border-black">
-                          <input type="checkbox" checked={formData.is_18_plus} onChange={(e) => set("is_18_plus", e.target.checked)} className="mt-0.5 size-4 shrink-0 cursor-pointer accent-black" />
+                        <label className={checkRowClass}>
+                          <input type="checkbox" checked={formData.is_18_plus} onChange={(e) => set("is_18_plus", e.target.checked)} className={checkboxClass} />
                           <span>I'm 18 or older.</span>
                         </label>
-                        <label className="flex items-start gap-3 border border-black/15 bg-white/60 p-4 text-sm text-[#1a1a1a] cursor-pointer transition-colors hover:border-black/40 has-checked:border-black">
-                          <input type="checkbox" checked={formData.consent_contact} onChange={(e) => set("consent_contact", e.target.checked)} className="mt-0.5 size-4 shrink-0 cursor-pointer accent-black" />
+                        <label className={checkRowClass}>
+                          <input type="checkbox" checked={formData.consent_contact} onChange={(e) => set("consent_contact", e.target.checked)} className={checkboxClass} />
                           <span>Huo can contact me about gigs and invite me to the app.</span>
                         </label>
+                        <PrivacyNote purpose="match you with gigs and invite you to Huo" />
                       </>
                     )}
                   </div>

@@ -12,11 +12,34 @@ The creative network connecting Ohio’s creative community — UI foundation an
 | Path | Purpose |
 | --- | --- |
 | `/` | Editorial talent-call landing (link-in-bio) |
+| `/hire` | Hire-interest form for businesses |
 | `/app` | Interactive UI kit / wireframes |
 
-## Talent call form
+## Intake forms
 
-In-app multi-step form on `/` (`#talent-call`) using Space Pro **`@shadcn-space/forms-06`**.
+Both forms live in `src/components/shadcn-space/blocks/forms-06/` and share styles from `form-kit.tsx`.
+Rows land in Supabase (`supabase/migrations/`); the public key can only insert.
+
+| Form | Where | Table |
+| --- | --- | --- |
+| Talent call (multi-step) | `/#talent-call` | `talent_call_submissions` |
+| Hire interest | `/hire` | `business_interest_submissions` |
+
+**Tracking where signups come from.** Each form saves `?utm_source=` into the `source` column.
+Share tagged links so Studio shows which channel works:
+
+| Channel | Link |
+| --- | --- |
+| Instagram bio | `/?utm_source=ig_bio` |
+| Instagram stories | `/?utm_source=ig_story#talent-call` |
+| Collaborator posts | `/?utm_source=collab_<handle>#talent-call` |
+| Business outreach | `/hire?utm_source=outreach` |
+| Thank-you share button | `referral` (set automatically) |
+
+**Link preview image.** `public/og.png` and `public/apple-touch-icon.png` are rendered from
+`scripts/og/*.html`. After editing those, run `./scripts/og/render.sh` (needs Google Chrome).
+The absolute URLs in the `og:` tags in `index.html` use the Vercel domain; change them if Huo
+moves to a custom domain.
 
 ## Workflow (locked)
 

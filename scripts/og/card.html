@@ -1,0 +1,74 @@
+<!doctype html>
+<!-- Source for public/og.png (1200x630). Re-render with scripts/og/render.sh -->
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600&family=Plus+Jakarta+Sans:wght@800&display=block" rel="stylesheet" />
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body { width: 1200px; height: 630px; overflow: hidden; }
+      body {
+        position: relative;
+        background: #e8e8e4;
+        color: #1a1a1a;
+        padding: 52px 60px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+      body::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        opacity: 0.45;
+        background-image:
+          radial-gradient(rgba(0, 0, 0, 0.07) 0.6px, transparent 0.6px),
+          radial-gradient(rgba(0, 0, 0, 0.04) 0.8px, transparent 0.8px);
+        background-size: 3px 3px, 7px 7px;
+        background-position: 0 0, 1px 2px;
+      }
+      .micro {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 17px;
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        line-height: 1.45;
+        text-transform: uppercase;
+        color: #2a2a2a;
+      }
+      .top, .bottom { position: relative; display: flex; justify-content: space-between; }
+      .top .right { text-align: right; }
+      .bottom { align-items: flex-end; }
+      h1 {
+        position: relative;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-weight: 800;
+        font-size: 104px;
+        line-height: 0.92;
+        letter-spacing: -0.02em;
+        text-transform: uppercase;
+        color: #ff3c75;
+      }
+      .cta {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: #fff;
+        background: #000;
+        padding: 16px 24px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top">
+      <div class="micro">HUO<br />COLUMBUS, OHIO<br />CREATIVE NETWORK</div>
+      <div class="micro right">MODELS · PHOTOGRAPHERS<br />FILMMAKERS · DESIGNERS<br />STYLISTS · CREATORS</div>
+    </div>
+    <div class="bottom">
+      <h1>You<br />should<br />be<br />discovered.</h1>
+      <div class="cta">Join the talent call</div>
+    </div>
+  </body>
+</html>

@@ -3,6 +3,7 @@
 export const INSTAGRAM_URL = 'https://www.instagram.com/huoapp/';
 
 export const DISCIPLINES = [
+  'MODELS',
   'PHOTOGRAPHERS',
   'FILMMAKERS',
   'DESIGNERS',
