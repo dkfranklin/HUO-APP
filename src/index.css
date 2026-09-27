@@ -106,13 +106,15 @@
   position: relative;
   z-index: 1;
   scroll-margin-top: 1.5rem;
-  padding-bottom: clamp(2rem, 6vh, 4rem);
+  padding-bottom: clamp(3rem, 10vh, 6rem);
   background-color: #e8e8e4;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  font-family: var(--font-sans);
 }
 
 .landing-form-intro {
   text-align: center;
-  padding: clamp(1.5rem, 4vh, 2.5rem) 1rem 0;
+  padding: clamp(2.5rem, 7vh, 4rem) 1rem 0;
 }
 
 .landing-form-kicker {
@@ -122,11 +124,6 @@
   font-weight: 700;
   letter-spacing: -0.02em;
   color: #1a1a1a;
-}
-
-.landing-form-section [data-slot='card'],
-.landing-form-section .bg-muted\/30 {
-  background-color: transparent;
 }
 
 .landing-grain {

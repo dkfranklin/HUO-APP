@@ -107,7 +107,7 @@ const EMPTY: FormData = {
 type StepId = "name" | "contact" | "practice" | "model" | "links" | "more" | "confirm";
 
 const STEP_COPY: Record<StepId, { eyebrow: string; title: string }> = {
-  name: { eyebrow: "Talent Call", title: "What's your name?" },
+  name: { eyebrow: "About you", title: "What's your name?" },
   contact: { eyebrow: "Contact", title: "Where can we reach you?" },
   practice: { eyebrow: "Practice", title: "What do you do?" },
   model: { eyebrow: "Model details", title: "Your stats" },
@@ -120,10 +120,19 @@ const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 const IG_RE = /^@?[A-Za-z0-9._]{1,30}$/;
 const URL_RE = /^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i;
 
-const inputClass =
-  "h-10 rounded-lg border-border bg-transparent shadow-none focus-visible:ring-1";
-const selectClass =
-  "h-10 w-full rounded-lg border border-border bg-transparent px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1";
+// Matches the poster: square edges, hairline black borders, mono uppercase labels.
+const fieldBase =
+  "rounded-none border border-black/20 bg-white/70 text-[#1a1a1a] shadow-none transition-colors placeholder:text-black/35 hover:border-black/40 focus-visible:border-black focus-visible:ring-0 focus-visible:outline-none";
+const inputClass = `h-11 px-3 ${fieldBase}`;
+const selectClass = `h-11 w-full px-3 text-sm ${fieldBase}`;
+const textareaClass = `min-h-24 resize-none px-3 py-2.5 ${fieldBase}`;
+const microClass = "font-mono text-[0.68rem] font-medium uppercase tracking-[0.08em] text-[#555]";
+const primaryButtonClass =
+  "h-11 gap-2 rounded-none border-black bg-black px-5 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-white hover:border-[var(--color-coral-dark)] hover:bg-[var(--color-coral-dark)] disabled:border-black/20 disabled:bg-black/20 disabled:opacity-100 cursor-pointer";
+const ghostButtonClass =
+  "h-11 gap-2 rounded-none px-0 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#666] hover:bg-transparent hover:text-black cursor-pointer";
+
+const pad2 = (n: number) => String(n).padStart(2, "0");
 
 const clean = (v: string) => {
   const t = v.trim();
@@ -162,9 +171,9 @@ const Field = ({
   children: React.ReactNode;
 }) => (
   <label className="flex flex-col gap-1.5 text-sm">
-    <span className="font-medium text-foreground">
+    <span className="font-medium text-[#1a1a1a]">
       {label}
-      {hint && <span className="ml-1 font-normal text-muted-foreground">{hint}</span>}
+      {hint && <span className="ml-1 font-normal text-[#777]">{hint}</span>}
     </span>
     {children}
   </label>
@@ -199,6 +208,12 @@ const OnboardingForm = () => {
   const totalSteps = steps.length;
   const isLast = stepIndex === totalSteps - 1;
 
+  const hasHeadshot = isModel && formData.headshot_url.trim().length > 0;
+  const hasWorkLink =
+    formData.instagram_handle.trim().length > 0 ||
+    formData.portfolio_url.trim().length > 0 ||
+    hasHeadshot;
+
   const isStepValid = (() => {
     const f = formData;
     switch (stepId) {
@@ -219,7 +234,8 @@ const OnboardingForm = () => {
         return f.height_ft !== "" && f.height_in !== "";
       case "links":
         return (
-          IG_RE.test(f.instagram_handle.trim()) &&
+          hasWorkLink &&
+          (!f.instagram_handle.trim() || IG_RE.test(f.instagram_handle.trim())) &&
           (!f.portfolio_url.trim() || URL_RE.test(f.portfolio_url.trim())) &&
           (!f.linkedin_url.trim() || URL_RE.test(f.linkedin_url.trim()))
         );
@@ -261,7 +277,7 @@ const OnboardingForm = () => {
       creative_types: f.creative_types,
       creative_type_other: f.creative_types.includes("other") ? clean(f.creative_type_other) : null,
       specialty: clean(f.specialty),
-      instagram_handle: f.instagram_handle.trim(),
+      instagram_handle: clean(f.instagram_handle),
       portfolio_url: withScheme(f.portfolio_url),
       linkedin_url: withScheme(f.linkedin_url),
       height_inches: isModel ? Number(f.height_ft) * 12 + Number(f.height_in) : null,
@@ -333,38 +349,33 @@ const OnboardingForm = () => {
     setFormData(EMPTY);
   };
 
+  const hasOptionalInput = [
+    formData.referred_by,
+    formData.refer_creative_handle,
+    formData.businesses_want,
+    formData.businesses_worked,
+    formData.anything_else,
+  ].some((v) => v.trim().length > 0);
+
   const typeLabels = CREATIVE_TYPES.filter((t) => formData.creative_types.includes(t.id))
     .map((t) => t.label)
     .join(", ");
 
   return (
-    <section className="flex items-center justify-center bg-muted/30 dark:bg-background py-10 lg:py-20 px-4">
+    <section className="flex justify-center px-4 pt-6 sm:pt-10">
       <div className="w-full max-w-xl">
-        <Card className="relative gap-0 rounded-2xl border border-border bg-background p-0 ring-0">
+        <Card className="relative gap-0 rounded-none border border-black bg-[var(--color-paper)] p-0 text-[#1a1a1a] ring-0 shadow-[6px_6px_0_0_rgba(0,0,0,0.08)]">
           {!isSubmitted && (
-            <div className="absolute right-6 top-6 z-10 flex size-12 shrink-0 items-center justify-center sm:right-8 sm:top-8">
-              <svg viewBox="0 0 36 36" className="absolute inset-0 size-full -rotate-90">
-                <circle cx="18" cy="18" r="15.5" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-muted" />
-                <motion.circle
-                  cx="18"
-                  cy="18"
-                  r="15.5"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2.5"
-                  strokeLinecap="round"
-                  className="text-foreground"
-                  style={{ pathLength: 0 }}
-                  animate={{ pathLength: (stepIndex + 1) / totalSteps }}
-                  transition={{ duration: 0.4, ease: EASE }}
-                />
-              </svg>
-              <span className="font-mono text-xs font-medium text-foreground tabular-nums">
-                {String(stepIndex + 1).padStart(2, "0")}
-              </span>
+            <div className="absolute inset-x-0 top-0 h-1 bg-black/10" aria-hidden="true">
+              <motion.div
+                className="h-full origin-left bg-[var(--color-coral-dark)]"
+                initial={false}
+                animate={{ scaleX: (stepIndex + 1) / totalSteps }}
+                transition={{ duration: 0.4, ease: EASE }}
+              />
             </div>
           )}
-          <CardContent className="flex flex-col gap-6 sm:gap-8 p-6 sm:p-8">
+          <CardContent className="flex flex-col gap-6 sm:gap-8 p-6 pt-8 sm:p-10">
             <AnimatePresence mode="popLayout" initial={false}>
               {isSubmitted ? (
                 <motion.div
@@ -381,17 +392,17 @@ const OnboardingForm = () => {
                     transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.1 }}
                     className="relative z-10 flex size-12 items-center justify-center"
                   >
-                    <div className="flex size-12 items-center justify-center rounded-full bg-foreground text-background">
+                    <div className="flex size-12 items-center justify-center rounded-full bg-[var(--color-coral-dark)] text-white">
                       <Check className="size-6" />
                     </div>
                   </motion.div>
 
                   <div className="relative z-10 flex w-full flex-col gap-4">
                     <div className="flex flex-col gap-1.5">
-                      <p className="text-3xl font-semibold tracking-tight text-foreground">
+                      <p className="text-3xl font-bold tracking-tight text-[#1a1a1a]">
                         {alreadyListed ? "You're already on the list" : `Thanks, ${formData.full_name.split(" ")[0] || "friend"}!`}
                       </p>
-                      <p className="text-sm text-muted-foreground max-w-sm mx-auto">
+                      <p className="text-sm text-[#666] max-w-sm mx-auto">
                         {alreadyListed
                           ? "We already have your info from an earlier signup. We'll be in touch."
                           : "You're on the Huo talent call list. We'll be in touch from Columbus."}
@@ -399,7 +410,7 @@ const OnboardingForm = () => {
                     </div>
 
                     {!alreadyListed && (
-                      <div className="w-full max-w-sm mx-auto divide-y divide-border rounded-xl border border-border bg-muted/30 text-left">
+                      <div className="w-full max-w-sm mx-auto divide-y divide-black/10 border border-black/15 bg-white/60 text-left">
                         {[
                           { label: "Name", value: formData.full_name },
                           { label: "Email", value: formData.email },
@@ -409,15 +420,15 @@ const OnboardingForm = () => {
                           .filter((row) => row.value)
                           .map((row) => (
                             <div key={row.label} className="flex flex-col sm:flex-row sm:items-start justify-between gap-1 sm:gap-3 px-4 py-3 text-sm">
-                              <span className="text-muted-foreground shrink-0">{row.label}</span>
-                              <span className="font-medium text-foreground sm:text-right wrap-break-word">{row.value}</span>
+                              <span className={cn(microClass, "shrink-0 pt-0.5")}>{row.label}</span>
+                              <span className="font-medium text-[#1a1a1a] sm:text-right wrap-break-word">{row.value}</span>
                             </div>
                           ))}
                       </div>
                     )}
                   </div>
 
-                  <Button variant="outline" onClick={handleReset} className="dark:bg-background rounded-full px-6 cursor-pointer">
+                  <Button variant="ghost" onClick={handleReset} className={ghostButtonClass}>
                     <RotateCcw className="size-3.5" />
                     Start over
                   </Button>
@@ -436,9 +447,14 @@ const OnboardingForm = () => {
                   }}
                   className="flex flex-col gap-6 sm:gap-8"
                 >
-                  <div className="flex flex-col gap-3 max-w-md pt-6 sm:pt-0">
-                    <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">{current.eyebrow}</p>
-                    <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground">{current.title}</h2>
+                  <div className="flex flex-col gap-3">
+                    <div className={cn(microClass, "flex items-center justify-between gap-4")}>
+                      <span>{current.eyebrow}</span>
+                      <span className="tabular-nums" aria-label={`Step ${stepIndex + 1} of ${totalSteps}`}>
+                        {pad2(stepIndex + 1)} / {pad2(totalSteps)}
+                      </span>
+                    </div>
+                    <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#1a1a1a]">{current.title}</h2>
                   </div>
 
                   {/* honeypot: hidden from people, bots fill it */}
@@ -486,7 +502,7 @@ const OnboardingForm = () => {
 
                     {stepId === "practice" && (
                       <>
-                        <p className="text-sm text-muted-foreground">Pick all that apply.</p>
+                        <p className="text-sm text-[#666]">Pick all that apply.</p>
                         <div className="grid grid-cols-2 gap-3">
                           {CREATIVE_TYPES.map((t) => {
                             const isSelected = formData.creative_types.includes(t.id);
@@ -497,10 +513,10 @@ const OnboardingForm = () => {
                                 aria-pressed={isSelected}
                                 onClick={() => toggleType(t.id)}
                                 className={cn(
-                                  "relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-xl border p-4 text-sm font-medium transition-colors cursor-pointer",
+                                  "relative flex flex-col items-center justify-center gap-2 overflow-hidden rounded-none border p-4 last:col-span-2 last:flex-row text-sm font-medium transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-black",
                                   isSelected
-                                    ? "border-dashed border-foreground bg-foreground/5 text-foreground"
-                                    : "border-border text-muted-foreground hover:border-foreground/40",
+                                    ? "border-black bg-black text-white"
+                                    : "border-black/15 bg-white/60 text-[#444] hover:border-black hover:text-black",
                                 )}
                               >
                                 <t.icon className="size-5" />
@@ -520,9 +536,7 @@ const OnboardingForm = () => {
                     {stepId === "model" && (
                       <>
                         <div className="flex flex-col gap-4">
-                          <p className="text-xs font-medium uppercase tracking-widest text-foreground">
-                            Required
-                          </p>
+                          <p className={cn(microClass, "text-[#1a1a1a]")}>Required</p>
                           <Field label="Height">
                             <div className="grid grid-cols-2 gap-3">
                               <select value={formData.height_ft} onChange={(e) => set("height_ft", e.target.value)} className={selectClass}>
@@ -541,20 +555,18 @@ const OnboardingForm = () => {
                           </Field>
                         </div>
 
-                        <div className="mt-2 flex flex-col gap-4 rounded-xl border border-dashed border-border p-4">
-                          <div className="flex flex-col gap-0.5">
-                            <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-                              Optional
-                            </p>
-                            <p className="text-sm text-muted-foreground">
+                        <div className="mt-2 flex flex-col gap-4 border border-dashed border-black/25 p-4 sm:p-5">
+                          <div className="flex flex-col gap-1">
+                            <p className={microClass}>Optional</p>
+                            <p className="text-sm text-[#666]">
                               Skip any of these. If you don't have a headshot link, we'll use your Instagram.
                             </p>
                           </div>
+                          <Field label="Headshot or polaroid" hint="(link, if you have one)">
+                            <Input value={formData.headshot_url} onChange={(e) => set("headshot_url", e.target.value)}
+                              placeholder="Drive or Dropbox link" className={inputClass} />
+                          </Field>
                           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                            <Field label="Headshot or polaroid" hint="Link if you have one">
-                              <Input value={formData.headshot_url} onChange={(e) => set("headshot_url", e.target.value)}
-                                placeholder="Drive or Dropbox link, or skip it" className={inputClass} />
-                            </Field>
                             <Field label="Bust / chest">
                               <Input value={formData.bust} onChange={(e) => set("bust", e.target.value)} placeholder='34"' className={inputClass} />
                             </Field>
@@ -580,10 +592,15 @@ const OnboardingForm = () => {
 
                     {stepId === "links" && (
                       <>
+                        <p className="text-sm text-[#666]">
+                          {hasHeadshot
+                            ? "Your headshot link counts, so these are all optional."
+                            : "Share your Instagram, a portfolio link, or both."}
+                        </p>
                         <Field label="Instagram handle">
                           <Input autoFocus value={formData.instagram_handle} onChange={(e) => set("instagram_handle", e.target.value)} placeholder="@yourhandle" className={inputClass} />
                         </Field>
-                        <Field label="Portfolio or website" hint="(optional)">
+                        <Field label="Portfolio or website">
                           <Input inputMode="url" value={formData.portfolio_url} onChange={(e) => set("portfolio_url", e.target.value)} placeholder="yoursite.com" className={inputClass} />
                         </Field>
                         <Field label="LinkedIn" hint="(optional)">
@@ -597,7 +614,7 @@ const OnboardingForm = () => {
 
                     {stepId === "more" && (
                       <>
-                        <p className="text-sm text-muted-foreground">All optional. Skip ahead if you like.</p>
+                        <p className="text-sm text-[#666]">All optional. Skip ahead if you like.</p>
                         <Field label="Who referred you?">
                           <Input value={formData.referred_by} onChange={(e) => set("referred_by", e.target.value)} placeholder="Name or @handle" className={inputClass} />
                         </Field>
@@ -611,19 +628,19 @@ const OnboardingForm = () => {
                           <Input value={formData.businesses_worked} onChange={(e) => set("businesses_worked", e.target.value)} className={inputClass} />
                         </Field>
                         <Field label="Anything else?">
-                          <Textarea value={formData.anything_else} onChange={(e) => set("anything_else", e.target.value)} className="min-h-24 rounded-lg border-border bg-transparent shadow-none focus-visible:ring-1 resize-none" />
+                          <Textarea value={formData.anything_else} onChange={(e) => set("anything_else", e.target.value)} className={textareaClass} />
                         </Field>
                       </>
                     )}
 
                     {stepId === "confirm" && (
                       <>
-                        <label className="flex items-start gap-3 text-sm text-foreground cursor-pointer">
-                          <input type="checkbox" checked={formData.is_18_plus} onChange={(e) => set("is_18_plus", e.target.checked)} className="mt-0.5 size-4 accent-foreground" />
+                        <label className="flex items-start gap-3 border border-black/15 bg-white/60 p-4 text-sm text-[#1a1a1a] cursor-pointer transition-colors hover:border-black/40 has-checked:border-black">
+                          <input type="checkbox" checked={formData.is_18_plus} onChange={(e) => set("is_18_plus", e.target.checked)} className="mt-0.5 size-4 shrink-0 cursor-pointer accent-black" />
                           <span>I'm 18 or older.</span>
                         </label>
-                        <label className="flex items-start gap-3 text-sm text-foreground cursor-pointer">
-                          <input type="checkbox" checked={formData.consent_contact} onChange={(e) => set("consent_contact", e.target.checked)} className="mt-0.5 size-4 accent-foreground" />
+                        <label className="flex items-start gap-3 border border-black/15 bg-white/60 p-4 text-sm text-[#1a1a1a] cursor-pointer transition-colors hover:border-black/40 has-checked:border-black">
+                          <input type="checkbox" checked={formData.consent_contact} onChange={(e) => set("consent_contact", e.target.checked)} className="mt-0.5 size-4 shrink-0 cursor-pointer accent-black" />
                           <span>Huo can contact me about gigs and invite me to the app.</span>
                         </label>
                       </>
@@ -631,18 +648,18 @@ const OnboardingForm = () => {
                   </div>
 
                   {error && (
-                    <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+                    <p role="alert" className="border-l-2 border-red-700 pl-3 text-sm text-red-700">
                       {error}
                     </p>
                   )}
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between border-t border-black/10 pt-6">
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="ghost"
                       onClick={goBack}
                       disabled={stepIndex === 0 || isSubmitting}
-                      className="h-10 dark:bg-background rounded-full px-6 cursor-pointer disabled:cursor-not-allowed"
+                      className={cn(ghostButtonClass, stepIndex === 0 && "invisible")}
                     >
                       <ArrowLeft className="size-3.5" />
                       Back
@@ -651,7 +668,7 @@ const OnboardingForm = () => {
                     <Button
                       type="submit"
                       disabled={!isStepValid || isSubmitting}
-                      className="rounded-full px-6 h-10 bg-foreground text-background hover:bg-foreground/80 cursor-pointer disabled:cursor-not-allowed"
+                      className={primaryButtonClass}
                     >
                       {isSubmitting ? (
                         <>
@@ -660,7 +677,7 @@ const OnboardingForm = () => {
                         </>
                       ) : (
                         <>
-                          {isLast ? "Submit" : stepId === "more" ? "Skip or continue" : "Continue"}
+                          {isLast ? "Submit" : stepId === "more" && !hasOptionalInput ? "Skip" : "Continue"}
                           <ArrowRight className="size-3.5" />
                         </>
                       )}
