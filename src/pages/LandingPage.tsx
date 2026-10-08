@@ -98,15 +98,16 @@ export function LandingPage() {
             <Link className="landing-cta landing-cta-secondary" to="/hire">
               Hiring creatives? →
             </Link>
-            <a
-              className="landing-cta landing-cta-ghost"
-              href={INSTAGRAM_URL}
-              target="_blank"
-              rel={linkRel}
-            >
-              @huoapp
-            </a>
           </nav>
+
+          <a
+            className="landing-cta landing-cta-ghost"
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel={linkRel}
+          >
+            @huoapp
+          </a>
 
         </footer>
       </div>
@@ -119,14 +120,6 @@ export function LandingPage() {
             Huo is a platform and network being built to connect Columbus creatives with
             businesses, opportunities, and other creatives.
           </p>
-          <nav className="landing-about-ctas" aria-label="Get started">
-            <Link className="landing-cta landing-cta-primary" to={`/join${search}`}>
-              Join the talent call
-            </Link>
-            <Link className="landing-cta landing-cta-secondary" to="/hire">
-              Hiring creatives? →
-            </Link>
-          </nav>
         </div>
       </section>
     </div>
