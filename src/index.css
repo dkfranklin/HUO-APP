@@ -134,6 +134,15 @@
   color: #555;
 }
 
+.landing-about-ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-top: 1.75rem;
+}
+
 /* /hire reuses the poster paper, grain and corner brand */
 .landing-hire {
   position: relative;
@@ -306,36 +315,6 @@
 .landing-cta-ghost:hover {
   color: #000;
   border-bottom-color: #000;
-}
-
-.landing-collab {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.35rem 0.85rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  max-width: 40rem;
-}
-
-.landing-collab a {
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.06em;
-  text-transform: lowercase;
-  color: #5c5c5c;
-  text-decoration: none;
-  outline: none;
-  transition: color 0.2s ease;
-}
-
-.landing-collab a:hover {
-  color: #000;
-}
-
-.landing-collab a:focus-visible {
-  box-shadow: 0 0 0 2px #e8e8e4, 0 0 0 3px #000;
 }
 
 .landing-fade {

@@ -1,14 +1,14 @@
 import { useLayoutEffect, useRef } from 'react';
 import { motion, useTransform } from 'motion/react';
-import { Link, useLocation } from 'react-router-dom';
-import OnboardingForm from '@/components/shadcn-space/blocks/forms-06/onboarding-form';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { usePosterMotion } from '../hooks/usePosterMotion';
-import { COLLAB_HANDLES, DISCIPLINES, HERO_LINES, INSTAGRAM_URL } from '../data/landing';
+import { DISCIPLINES, HERO_LINES, INSTAGRAM_URL } from '../data/landing';
 
 const linkRel = 'noopener noreferrer';
 
 export function LandingPage() {
-  const { hash } = useLocation();
+  const { hash, search } = useLocation();
+  const navigate = useNavigate();
   const posterRef = useRef<HTMLDivElement>(null);
   const motionLayers = usePosterMotion(posterRef);
 
@@ -19,13 +19,13 @@ export function LandingPage() {
   const heroOpacity = useTransform(motionLayers.scrollFade, [0, 18], [1, 0.72]);
 
   useLayoutEffect(() => {
+    // Older shared links point at /#talent-call; the form now lives on /join.
     if (hash === '#talent-call') {
-      const target = document.getElementById('talent-call');
-      target?.scrollIntoView({ behavior: 'instant', block: 'start' });
+      navigate(`/join${search}`, { replace: true });
       return;
     }
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-  }, [hash]);
+  }, [hash, search, navigate]);
 
   return (
     <div className="landing-page">
@@ -92,9 +92,9 @@ export function LandingPage() {
           </div>
 
           <nav className="landing-ctas" aria-label="Talent call actions">
-            <a className="landing-cta landing-cta-primary" href="#talent-call">
+            <Link className="landing-cta landing-cta-primary" to={`/join${search}`}>
               Join the talent call
-            </a>
+            </Link>
             <Link className="landing-cta landing-cta-secondary" to="/hire">
               Hiring creatives? →
             </Link>
@@ -108,32 +108,26 @@ export function LandingPage() {
             </a>
           </nav>
 
-          <ul className="landing-collab">
-            {COLLAB_HANDLES.map(({ handle, url }) => (
-              <li key={handle}>
-                <a href={url} target="_blank" rel={linkRel}>
-                  @{handle}
-                </a>
-              </li>
-            ))}
-          </ul>
         </footer>
       </div>
 
-      <section
-        id="talent-call"
-        className="landing-form-section"
-        aria-label="Huo talent call form"
-      >
+      <section className="landing-form-section" aria-label="What is Huo?">
         <div className="landing-form-intro">
-          <p className="landing-micro">TALENT CALL</p>
-          <p className="landing-form-kicker">Tell us who you are.</p>
+          <p className="landing-micro">WHAT IS HUO?</p>
+          <h2 className="landing-form-kicker">We are building the Columbus Creative Network.</h2>
           <p className="landing-form-note">
-            We match Columbus creatives with paid local gigs by hand. If there's a fit,
-            we'll reach out.
+            Huo is a platform and network being built to connect Columbus creatives with
+            businesses, opportunities, and other creatives.
           </p>
+          <nav className="landing-about-ctas" aria-label="Get started">
+            <Link className="landing-cta landing-cta-primary" to={`/join${search}`}>
+              Join the talent call
+            </Link>
+            <Link className="landing-cta landing-cta-secondary" to="/hire">
+              Hiring creatives? →
+            </Link>
+          </nav>
         </div>
-        <OnboardingForm />
       </section>
     </div>
   );

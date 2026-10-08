@@ -369,7 +369,7 @@ const OnboardingForm = () => {
 
                   <ShareActions
                     shareText="Huo is matching Columbus creatives with paid local gigs. Join the talent call:"
-                    sharePath="/?utm_source=referral#talent-call"
+                    sharePath="/join?utm_source=referral"
                   />
                 </motion.div>
               ) : (
