@@ -53,7 +53,7 @@ export function LandingPage() {
             <p className="landing-micro">CREATIVE NETWORK</p>
           </motion.div>
 
-          <motion.ul
+          <motion.div
             className="landing-disciplines landing-fade landing-fade-delay-2"
             style={{
               x: motionLayers.disciplines.x,
@@ -61,10 +61,13 @@ export function LandingPage() {
               rotate: motionLayers.disciplines.rotate,
             }}
           >
-            {DISCIPLINES.map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </motion.ul>
+            <p className="landing-disciplines-label">Now calling</p>
+            <ul>
+              {DISCIPLINES.map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </motion.div>
         </header>
 
         <main className="landing-main">
@@ -85,7 +88,7 @@ export function LandingPage() {
           </motion.h1>
         </main>
 
-        <footer className="landing-footer landing-fade landing-fade-delay-4">
+        <footer className="landing-footer">
           <div className="landing-call">
             <p className="landing-micro">HUO CREATIVE TALENT CALL</p>
             <p className="landing-micro landing-call-sub">NOW OPEN</p>
@@ -115,7 +118,7 @@ export function LandingPage() {
         </footer>
       </div>
 
-      <section className="landing-form-section" aria-label="What is Huo?">
+      <section className="landing-form-section landing-about" aria-label="What is Huo?">
         <div className="landing-form-intro">
           <p className="landing-micro">WHAT IS HUO?</p>
           <h2 className="landing-form-kicker">We are building the Columbus Creative Network.</h2>

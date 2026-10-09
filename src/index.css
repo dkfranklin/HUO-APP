@@ -8,7 +8,7 @@
 @layer base {
   :root {
     --color-coral: #FFB5AF;
-    --color-coral-dark: #FF3C75;
+    --color-coral-dark: #E02A62;
     --color-stone: #C0C0C0;
     --color-stone-light: #E0E0DC;
     --color-stone-dark: #8A8A82;
@@ -117,6 +117,18 @@
   padding: clamp(2.5rem, 7vh, 4rem) 1rem 0;
 }
 
+.landing-about .landing-form-intro {
+  max-width: 44rem;
+  text-align: left;
+  padding-inline: clamp(1.25rem, 3.5vw, 2.75rem);
+}
+
+.landing-about .landing-form-note {
+  margin-inline: 0;
+  max-width: 34rem;
+  font-size: clamp(1rem, 1.6vw, 1.0625rem);
+}
+
 .landing-form-kicker {
   margin: 0.5rem 0 0;
   font-family: var(--font-sans);
@@ -192,7 +204,7 @@
 .landing-micro {
   margin: 0;
   font-family: var(--font-mono);
-  font-size: clamp(0.62rem, 1.1vw, 0.72rem);
+  font-size: clamp(0.75rem, 1.1vw, 0.8125rem);
   font-weight: 500;
   letter-spacing: 0.08em;
   line-height: 1.45;
@@ -200,13 +212,21 @@
   color: #2a2a2a;
 }
 
-.landing-disciplines {
+.landing-disciplines ul {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.landing-disciplines-label {
+  margin: 0 0 0.35rem;
+  color: #777;
+}
+
+.landing-disciplines {
   text-align: right;
   font-family: var(--font-mono);
-  font-size: clamp(0.64rem, 1vw, 0.72rem);
+  font-size: clamp(0.75rem, 1vw, 0.8125rem);
   font-weight: 500;
   letter-spacing: 0.1em;
   line-height: 1.5;
@@ -218,17 +238,18 @@
   flex: 1;
   display: flex;
   align-items: center;
-  padding: clamp(2rem, 8vh, 5rem) 0;
+  padding: clamp(1.25rem, 5vh, 3.5rem) 0;
   max-width: 100%;
 }
 
 .landing-hero {
   margin: 0;
-  font-family: var(--font-sans);
-  font-weight: 800;
-  font-size: clamp(2.75rem, 11vw, 7.5rem);
-  line-height: 0.92;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-weight: 400;
+  /* sized by width and height so the buttons stay on the first screen */
+  font-size: clamp(3rem, min(13vw, 13.5vh), 9rem);
+  line-height: 0.9;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--color-coral-dark);
 }
@@ -240,9 +261,9 @@
 .landing-footer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: clamp(1rem, 3vh, 1.75rem);
-  text-align: center;
+  align-items: flex-start;
+  gap: clamp(0.75rem, 2.5vh, 1.5rem);
+  text-align: left;
 }
 
 .landing-call-sub {
@@ -251,18 +272,17 @@
 }
 
 .landing-tagline {
-  margin: 0.75rem auto 0;
+  margin: 0.75rem 0 0;
   max-width: 44rem;
-  font-size: clamp(0.9rem, 1.6vw, 1rem);
+  font-size: clamp(1rem, 1.6vw, 1.0625rem);
   line-height: 1.45;
-  text-align: center;
   color: #2a2a2a;
 }
 
 .landing-ctas {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.75rem 1.25rem;
 }
@@ -295,26 +315,31 @@
   border-color: var(--color-coral-dark);
 }
 
+.landing-cta-secondary,
+.landing-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+
 .landing-cta-secondary {
   color: #000;
-  border-bottom: 1px solid #000;
-  padding: 0.35rem 0;
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
 }
 
 .landing-cta-secondary:hover {
   color: var(--color-coral-dark);
-  border-bottom-color: var(--color-coral-dark);
 }
 
 .landing-cta-ghost {
   color: #555;
-  border-bottom: 1px solid transparent;
-  padding: 0.35rem 0;
+  text-underline-offset: 0.35em;
 }
 
 .landing-cta-ghost:hover {
   color: #000;
-  border-bottom-color: #000;
+  text-decoration: underline;
 }
 
 .landing-fade {
@@ -382,11 +407,12 @@
   }
 
   .landing-hero {
-    font-size: clamp(2.5rem, 14vw, 3.75rem);
+    font-size: clamp(2.75rem, 18.5vw, 5rem);
   }
 
   .landing-ctas {
     flex-direction: column;
+    align-items: flex-start;
     width: 100%;
   }
 

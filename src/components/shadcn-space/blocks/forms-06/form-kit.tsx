@@ -30,13 +30,13 @@ export const IG_RE = /^@?[A-Za-z0-9._]{1,30}$/;
 export const URL_RE = /^(https?:\/\/)?[^\s.]+\.[^\s]{2,}$/i;
 
 const fieldBase =
-  "rounded-none border border-black/20 bg-white/70 text-[#1a1a1a] shadow-none transition-colors placeholder:text-black/35 hover:border-black/40 focus-visible:border-black focus-visible:ring-0 focus-visible:outline-none";
+  "rounded-none border border-black/20 bg-white/70 text-[#1a1a1a] shadow-none transition-colors placeholder:text-black/35 hover:border-black/40 focus-visible:border-[var(--color-coral-dark)] focus-visible:ring-1 focus-visible:ring-[var(--color-coral-dark)] focus-visible:outline-none";
 export const inputClass = `h-11 px-3 ${fieldBase}`;
 export const selectClass = `h-11 w-full px-3 text-sm ${fieldBase}`;
 export const textareaClass = `min-h-24 resize-none px-3 py-2.5 ${fieldBase}`;
 export const microClass = "font-mono text-[0.68rem] font-medium uppercase tracking-[0.08em] text-[#555]";
 export const primaryButtonClass =
-  "h-11 gap-2 rounded-none border-black bg-black px-5 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-white hover:border-[var(--color-coral-dark)] hover:bg-[var(--color-coral-dark)] disabled:border-black/20 disabled:bg-black/20 disabled:opacity-100 cursor-pointer";
+  "h-11 gap-2 rounded-none border-black bg-black px-5 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-white hover:border-[var(--color-coral-dark)] hover:bg-[var(--color-coral-dark)] disabled:border-black/35 disabled:bg-transparent disabled:text-black/50 disabled:opacity-100 cursor-pointer";
 export const ghostButtonClass =
   "h-11 gap-2 rounded-none px-0 font-mono text-xs font-semibold uppercase tracking-[0.08em] text-[#666] hover:bg-transparent hover:text-black cursor-pointer";
 export const cardClass =
