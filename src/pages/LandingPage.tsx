@@ -88,7 +88,10 @@ export function LandingPage() {
         <footer className="landing-footer landing-fade landing-fade-delay-4">
           <div className="landing-call">
             <p className="landing-micro">HUO CREATIVE TALENT CALL</p>
-            <p className="landing-micro landing-call-sub">JOIN BELOW</p>
+            <p className="landing-micro landing-call-sub">NOW OPEN</p>
+            <p className="landing-tagline">
+              Columbus&apos; creative network, connecting creatives with businesses and opportunities.
+            </p>
           </div>
 
           <nav className="landing-ctas" aria-label="Talent call actions">

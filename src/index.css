@@ -250,6 +250,15 @@
   color: #555;
 }
 
+.landing-tagline {
+  margin: 0.75rem auto 0;
+  max-width: 44rem;
+  font-size: clamp(0.9rem, 1.6vw, 1rem);
+  line-height: 1.45;
+  text-align: center;
+  color: #2a2a2a;
+}
+
 .landing-ctas {
   display: flex;
   flex-wrap: wrap;

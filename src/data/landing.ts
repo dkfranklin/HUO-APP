@@ -6,10 +6,9 @@ export const CONTACT_EMAIL = 'connect@thehuoapp.com';
 export const DISCIPLINES = [
   'MODELS',
   'PHOTOGRAPHERS',
-  'FILMMAKERS',
+  'VIDEOGRAPHERS',
   'DESIGNERS',
-  'PRODUCERS',
-  'ARTISTS',
+  'HAIR & MAKEUP',
   'STYLISTS',
 ] as const;
 

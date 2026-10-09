@@ -25,7 +25,7 @@ export function HirePage() {
       <section className="landing-form-section" aria-label="Huo hire interest form">
         <div className="landing-form-intro">
           <p className="landing-micro">HIRING CREATIVES</p>
-          <h1 className="landing-form-kicker">Find local talent for paid gigs.</h1>
+          <h1 className="landing-form-kicker">Find Columbus creatives for your next project.</h1>
           <p className="landing-form-note">
             Tell us about your business. We'll match you with Columbus models,
             photographers, stylists and more.
