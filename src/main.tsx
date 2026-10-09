@@ -9,6 +9,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 import { LandingPage } from './pages/LandingPage';
 import { HirePage } from './pages/HirePage';
+import { JoinPage } from './pages/JoinPage';
 import './index.css';
 
 function LandingRoute() {
@@ -26,6 +27,7 @@ function LandingRoute() {
 
 const router = createBrowserRouter([
   { path: '/', element: <LandingRoute /> },
+  { path: '/join', element: <JoinPage /> },
   { path: '/hire', element: <HirePage /> },
   { path: '/app', element: <App /> },
   { path: '/app/*', element: <App /> },

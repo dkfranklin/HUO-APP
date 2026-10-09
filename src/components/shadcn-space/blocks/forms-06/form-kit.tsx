@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Camera, Check, Film, Instagram, PenTool, Scissors, Send, Shirt, Sparkles, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { INSTAGRAM_URL } from "@/data/landing";
+import { CONTACT_EMAIL, INSTAGRAM_URL } from "@/data/landing";
 
 // Shared pieces for the talent call and hire forms. Matches the poster: square
 // edges, hairline black borders, mono uppercase labels.
@@ -110,9 +110,9 @@ export const TypeTile = ({
 
 export const PrivacyNote = ({ purpose }: { purpose: string }) => (
   <p className="text-xs leading-relaxed text-[#666]">
-    We only use this to {purpose}. DM{" "}
-    <a href={INSTAGRAM_URL} target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-black">
-      @huoapp
+    We only use this to {purpose}. Email{" "}
+    <a href={`mailto:${CONTACT_EMAIL}`} className="underline underline-offset-2 hover:text-black">
+      {CONTACT_EMAIL}
     </a>{" "}
     anytime to be removed.
   </p>

@@ -58,10 +58,8 @@ type FormData = {
   portfolio_url: string;
   linkedin_url: string;
   specialty: string;
+  looking_for: string[];
   referred_by: string;
-  refer_creative_handle: string;
-  businesses_want: string;
-  businesses_worked: string;
   anything_else: string;
   is_18_plus: boolean;
   consent_contact: boolean;
@@ -89,10 +87,8 @@ const EMPTY: FormData = {
   portfolio_url: "",
   linkedin_url: "",
   specialty: "",
+  looking_for: [],
   referred_by: "",
-  refer_creative_handle: "",
-  businesses_want: "",
-  businesses_worked: "",
   anything_else: "",
   is_18_plus: false,
   consent_contact: false,
@@ -107,10 +103,17 @@ const STEP_COPY: Record<StepId, { eyebrow: string; title: string }> = {
   practice: { eyebrow: "Practice", title: "What do you do?" },
   model: { eyebrow: "Model details", title: "Your stats" },
   links: { eyebrow: "Your work", title: "Where can we see it?" },
-  more: { eyebrow: "Optional", title: "Help us grow the network" },
+  more: { eyebrow: "Optional", title: "What are you looking for?" },
   confirm: { eyebrow: "Last step", title: "Almost done" },
 };
 
+
+const LOOKING_FOR = [
+  { id: "paid_work", label: "Paid gigs" },
+  { id: "collabs", label: "Collaborations" },
+  { id: "networking", label: "Meeting other creatives" },
+  { id: "learning", label: "Learning and mentorship" },
+] as const;
 
 const stepVariants = {
   initial: (dir: number) => ({ x: dir > 0 ? 24 : -24, opacity: 0 }),
@@ -236,10 +239,8 @@ const OnboardingForm = () => {
       eyes: isModel ? clean(f.eyes) : null,
       hair: isModel ? clean(f.hair) : null,
       headshot_url: isModel ? clean(f.headshot_url) : null,
+      ...(f.looking_for.length ? { looking_for: f.looking_for } : {}),
       referred_by: clean(f.referred_by),
-      refer_creative_handle: clean(f.refer_creative_handle),
-      businesses_want: clean(f.businesses_want),
-      businesses_worked: clean(f.businesses_worked),
       anything_else: clean(f.anything_else),
       source: utmSource(),
     };
@@ -248,9 +249,13 @@ const OnboardingForm = () => {
     setError(null);
     try {
       // No .select() here: the public key can insert but not read rows back.
-      const { error: dbError } = await getSupabase()
-        .from("talent_call_submissions")
-        .insert(row);
+      const table = getSupabase().from("talent_call_submissions");
+      let { error: dbError } = await table.insert(row);
+      // looking_for needs a migration; if it isn't applied yet, save the rest.
+      if (dbError?.code === "PGRST204" && "looking_for" in row) {
+        const { looking_for: _skipped, ...rest } = row;
+        ({ error: dbError } = await getSupabase().from("talent_call_submissions").insert(rest));
+      }
 
       if (dbError) {
         if (dbError.code === "23505") {
@@ -288,13 +293,18 @@ const OnboardingForm = () => {
     setStepIndex((i) => i - 1);
   };
 
-  const hasOptionalInput = [
-    formData.referred_by,
-    formData.refer_creative_handle,
-    formData.businesses_want,
-    formData.businesses_worked,
-    formData.anything_else,
-  ].some((v) => v.trim().length > 0);
+  const hasOptionalInput =
+    formData.looking_for.length > 0 ||
+    [formData.referred_by, formData.anything_else].some((v) => v.trim().length > 0);
+
+  const toggleLookingFor = (id: string) => {
+    set(
+      "looking_for",
+      formData.looking_for.includes(id)
+        ? formData.looking_for.filter((v) => v !== id)
+        : [...formData.looking_for, id],
+    );
+  };
 
   const typeLabels = CREATIVE_TYPES.filter((t) => formData.creative_types.includes(t.id))
     .map((t) => t.label)
@@ -344,7 +354,7 @@ const OnboardingForm = () => {
                       <p className="text-sm text-[#666] max-w-sm mx-auto">
                         {alreadyListed
                           ? "We already have your info from an earlier signup. We'll be in touch."
-                          : "You're on the Huo talent call list. We'll be in touch from Columbus."}
+                          : "You're on the Huo talent call list. If there's a fit, we'll reach out."}
                       </p>
                     </div>
 
@@ -368,8 +378,8 @@ const OnboardingForm = () => {
                   </div>
 
                   <ShareActions
-                    shareText="Huo is matching Columbus creatives with paid local gigs. Join the talent call:"
-                    sharePath="/?utm_source=referral#talent-call"
+                    shareText="Huo is building Columbus' creative network. Join the talent call:"
+                    sharePath="/join?utm_source=referral"
                   />
                 </motion.div>
               ) : (
@@ -542,18 +552,17 @@ const OnboardingForm = () => {
 
                     {stepId === "more" && (
                       <>
-                        <p className="text-sm text-[#666]">All optional. Skip ahead if you like.</p>
+                        <p className="text-sm text-[#666]">All optional. Pick any that apply, or skip ahead.</p>
+                        <div className="flex flex-col gap-3">
+                          {LOOKING_FOR.map((o) => (
+                            <label key={o.id} className={checkRowClass}>
+                              <input type="checkbox" checked={formData.looking_for.includes(o.id)} onChange={() => toggleLookingFor(o.id)} className={checkboxClass} />
+                              <span>{o.label}</span>
+                            </label>
+                          ))}
+                        </div>
                         <Field label="Who referred you?">
                           <Input value={formData.referred_by} onChange={(e) => set("referred_by", e.target.value)} placeholder="Name or @handle" className={inputClass} />
-                        </Field>
-                        <Field label="Know a creative we should reach out to?">
-                          <Input value={formData.refer_creative_handle} onChange={(e) => set("refer_creative_handle", e.target.value)} placeholder="@theirhandle" className={inputClass} />
-                        </Field>
-                        <Field label="Local businesses you'd love to work with">
-                          <Input value={formData.businesses_want} onChange={(e) => set("businesses_want", e.target.value)} className={inputClass} />
-                        </Field>
-                        <Field label="Local businesses you've worked with">
-                          <Input value={formData.businesses_worked} onChange={(e) => set("businesses_worked", e.target.value)} className={inputClass} />
                         </Field>
                         <Field label="Anything else?">
                           <Textarea value={formData.anything_else} onChange={(e) => set("anything_else", e.target.value)} className={textareaClass} />
@@ -569,9 +578,9 @@ const OnboardingForm = () => {
                         </label>
                         <label className={checkRowClass}>
                           <input type="checkbox" checked={formData.consent_contact} onChange={(e) => set("consent_contact", e.target.checked)} className={checkboxClass} />
-                          <span>Huo can contact me about gigs and invite me to the app.</span>
+                          <span>Huo can contact me about opportunities and invite me to the app.</span>
                         </label>
-                        <PrivacyNote purpose="match you with gigs and invite you to Huo" />
+                        <PrivacyNote purpose="reach out about opportunities and invite you to Huo" />
                       </>
                     )}
                   </div>

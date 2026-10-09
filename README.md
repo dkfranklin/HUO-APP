@@ -12,6 +12,7 @@ The creative network connecting Ohio’s creative community — UI foundation an
 | Path | Purpose |
 | --- | --- |
 | `/` | Editorial talent-call landing (link-in-bio) |
+| `/join` | Talent-call form for creatives |
 | `/hire` | Hire-interest form for businesses |
 | `/app` | Interactive UI kit / wireframes |
 
@@ -22,7 +23,7 @@ Rows land in Supabase (`supabase/migrations/`); the public key can only insert.
 
 | Form | Where | Table |
 | --- | --- | --- |
-| Talent call (multi-step) | `/#talent-call` | `talent_call_submissions` |
+| Talent call (multi-step) | `/join` (old `/#talent-call` links redirect) | `talent_call_submissions` |
 | Hire interest | `/hire` | `business_interest_submissions` |
 
 **Tracking where signups come from.** Each form saves `?utm_source=` into the `source` column.
@@ -31,8 +32,8 @@ Share tagged links so Studio shows which channel works:
 | Channel | Link |
 | --- | --- |
 | Instagram bio | `/?utm_source=ig_bio` |
-| Instagram stories | `/?utm_source=ig_story#talent-call` |
-| Collaborator posts | `/?utm_source=collab_<handle>#talent-call` |
+| Instagram stories | `/join?utm_source=ig_story` |
+| Collaborator posts | `/join?utm_source=collab_<handle>` |
 | Business outreach | `/hire?utm_source=outreach` |
 | Thank-you share button | `referral` (set automatically) |
 

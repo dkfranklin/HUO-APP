@@ -1,8 +1,8 @@
 import { useLayoutEffect } from 'react';
 import { Link } from 'react-router-dom';
-import HireForm from '@/components/shadcn-space/blocks/forms-06/hire-form';
+import OnboardingForm from '@/components/shadcn-space/blocks/forms-06/onboarding-form';
 
-export function HirePage() {
+export function JoinPage() {
   useLayoutEffect(() => {
     window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
   }, []);
@@ -17,24 +17,25 @@ export function HirePage() {
           <p className="landing-micro">COLUMBUS, OHIO</p>
           <p className="landing-micro">CREATIVE NETWORK</p>
         </Link>
-        <Link to="/join" className="landing-cta landing-cta-ghost">
-          I'm a creative →
+        <Link to="/hire" className="landing-cta landing-cta-ghost">
+          Hiring creatives? →
         </Link>
       </header>
 
-      <section className="landing-form-section" aria-label="Huo hire interest form">
+      <section className="landing-form-section" aria-label="Huo talent call form">
         <div className="landing-form-intro">
-          <p className="landing-micro">HIRING CREATIVES</p>
-          <h1 className="landing-form-kicker">Find Columbus creatives for your next project.</h1>
+          <p className="landing-micro">TALENT CALL</p>
+          <h1 className="landing-form-kicker">Tell us who you are.</h1>
           <p className="landing-form-note">
-            Tell us about your business. We'll match you with Columbus models,
-            photographers, stylists and more.
+            We're building Columbus' creative network. Tell us about yourself, what you
+            do, and what opportunities you're looking for. If there's a fit, we'll reach
+            out.
           </p>
         </div>
-        <HireForm />
+        <OnboardingForm />
       </section>
     </div>
   );
 }
 
-export default HirePage;
+export default JoinPage;
